@@ -50,22 +50,20 @@ func (t *TimescaleDBHandler) ProcessEvent(event *corev2.Event) error {
 	defer stmt.Close()
 
 	for _, point := range event.Metrics.Points {
-		stringTimestamp := strconv.FormatInt(point.Timestamp, 10)
-		if len(stringTimestamp) > 10 {
-			stringTimestamp = stringTimestamp[:10]
-		}
-		t, err := strconv.ParseInt(stringTimestamp, 10, 64)
+		timestamp, err := convertInt64ToTime(point.Timestamp)
 		if err != nil {
 			return err
 		}
-		timestamp := time.Unix(t, 0)
 
 		jsonTags, err := json.Marshal(point.Tags)
 		if err != nil {
 			return err
 		}
 
-		stmt.Exec(timestamp, point.Name, point.Value, event.Entity.Name, jsonTags)
+		_, err = stmt.Exec(timestamp, point.Name, point.Value, event.Entity.Name, jsonTags)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -97,4 +95,16 @@ func (t *TimescaleDBHandler) Validate(event *corev2.Event) error {
 		return fmt.Errorf("event does not contain metrics")
 	}
 	return nil
+}
+
+func convertInt64ToTime(t int64) (time.Time, error) {
+	stringTimestamp := strconv.FormatInt(t, 10)
+	if len(stringTimestamp) > 10 {
+		stringTimestamp = stringTimestamp[:10]
+	}
+	t, err := strconv.ParseInt(stringTimestamp, 10, 64)
+	if err != nil {
+		return time.Time{}, err
+	}
+	return time.Unix(t, 0), nil
 }

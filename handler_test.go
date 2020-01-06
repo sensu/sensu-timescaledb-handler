@@ -2,6 +2,8 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
+	"fmt"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
@@ -146,18 +148,85 @@ func TestTimescaleDBHandler_ProcessEvent(t *testing.T) {
 		name     string
 		fields   fields
 		args     args
-		dbMocks  func(sqlmock.Sqlmock)
+		dbMocks  func(args, sqlmock.Sqlmock) error
 		wantErr  bool
 		errMatch string
 	}{
 		{
-			name: "fails when timestamp is invalid",
-			args: args{},
-			dbMocks: func(mock sqlmock.Sqlmock) {
-				mock.ExpectPrepare("INSERT INTO (time, name, value, source, tags) VALUES($1, $2, $3, $4, $5)")
+			name: "fails when query preparation returns an error",
+			fields: fields{
+				Config: TimescaleDBHandlerConfig{
+					Table: "metrics",
+				},
+			},
+			args: args{
+				event: FixtureEventWithMetrics("entity1", "check1"),
+			},
+			dbMocks: func(args args, mock sqlmock.Sqlmock) error {
+				mock.ExpectPrepare("INSERT INTO metrics\\(time, name, value, source, tags\\) VALUES\\(\\$1, \\$2, \\$3, \\$4, \\$5").
+					WillReturnError(fmt.Errorf("failed to prepare query"))
+				return nil
 			},
 			wantErr:  true,
-			errMatch: "abc",
+			errMatch: "failed to prepare query",
+		},
+		{
+			name: "fails when query exec returns an error",
+			fields: fields{
+				Config: TimescaleDBHandlerConfig{
+					Table: "metrics",
+				},
+			},
+			args: args{
+				event: FixtureEventWithMetrics("entity1", "check1"),
+			},
+			dbMocks: func(args args, mock sqlmock.Sqlmock) error {
+				mp := args.event.Metrics.Points[0]
+				ts, err := convertInt64ToTime(mp.Timestamp)
+				if err != nil {
+					return err
+				}
+				tags, err := json.Marshal(mp.Tags)
+				if err != nil {
+					return err
+				}
+
+				mock.ExpectPrepare("INSERT INTO metrics\\(time, name, value, source, tags\\) VALUES\\(\\$1, \\$2, \\$3, \\$4, \\$5")
+				mock.ExpectExec("INSERT INTO metrics").WithArgs(ts, mp.Name, mp.Value, args.event.Entity.Name, tags).
+					WillReturnError(fmt.Errorf("failed to execute query"))
+
+				return nil
+			},
+			wantErr:  true,
+			errMatch: "failed to execute query",
+		},
+		{
+			name: "pass when query exec succeeds",
+			fields: fields{
+				Config: TimescaleDBHandlerConfig{
+					Table: "metrics",
+				},
+			},
+			args: args{
+				event: FixtureEventWithMetrics("entity1", "check1"),
+			},
+			dbMocks: func(args args, mock sqlmock.Sqlmock) error {
+				mp := args.event.Metrics.Points[0]
+				ts, err := convertInt64ToTime(mp.Timestamp)
+				if err != nil {
+					return err
+				}
+				tags, err := json.Marshal(mp.Tags)
+				if err != nil {
+					return err
+				}
+
+				mock.ExpectPrepare("INSERT INTO metrics\\(time, name, value, source, tags\\) VALUES\\(\\$1, \\$2, \\$3, \\$4, \\$5")
+				mock.ExpectExec("INSERT INTO metrics").WithArgs(ts, mp.Name, mp.Value, args.event.Entity.Name, tags).WillReturnResult(sqlmock.NewResult(1, 1))
+
+				return nil
+			},
+			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
@@ -173,7 +242,9 @@ func TestTimescaleDBHandler_ProcessEvent(t *testing.T) {
 				DB:           db,
 			}
 			if tt.dbMocks != nil {
-				tt.dbMocks(mock)
+				if err = tt.dbMocks(tt.args, mock); err != nil {
+					t.Fatalf("failed to set up db mocks: %s", err)
+				}
 			}
 			err = tr.ProcessEvent(tt.args.event)
 			assert.Equal(t, tt.wantErr, err != nil)
