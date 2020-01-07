@@ -18,8 +18,8 @@ func main() {
 			Env:       "TIMESCALEDB_DSN",
 			Argument:  "dsn",
 			Shorthand: "d",
-			Default:   "postgres://localhost:5432/metrics",
-			Usage:     "the DSN of the TimescaleDB database, should be in DSN (Data Source Name) format (e.g. postgresql://localhost:5432/metrics)",
+			Default:   "postgres://localhost:5432/sensu",
+			Usage:     "the DSN of the TimescaleDB database, should be in DSN (Data Source Name) format (e.g. postgresql://localhost:5432/sensu)",
 			Value:     &handler.Config.DSN,
 		},
 		{

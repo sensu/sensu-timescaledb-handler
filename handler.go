@@ -29,11 +29,12 @@ type TimescaleDBHandlerConfig struct {
 }
 
 func (t *TimescaleDBHandler) Run(event *corev2.Event) error {
-	defer t.DB.Close()
-
 	if err := t.Setup(); err != nil {
 		return err
 	}
+
+	defer t.DB.Close()
+
 	if err := t.ProcessEvent(event); err != nil {
 		return err
 	}
@@ -92,7 +93,7 @@ func (t *TimescaleDBHandler) Validate(event *corev2.Event) error {
 		return errors.New("missing Table")
 	}
 	if !event.HasMetrics() {
-		return fmt.Errorf("event does not contain metrics")
+		return errors.New("event does not contain metrics")
 	}
 	return nil
 }
