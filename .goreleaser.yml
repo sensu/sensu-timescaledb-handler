@@ -1,9 +1,8 @@
 builds:
-  # List of builds
-  - # First Build
+  -
     env:
     - CGO_ENABLED=0
-    main: main.go
+    - GO111MODULE=on
     # Set the binary output location to bin/ so archive will comply with Sensu Go Asset structure
     binary: bin/{{ .ProjectName }}
     goos:
