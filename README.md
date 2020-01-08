@@ -1,5 +1,5 @@
 # Sensu TimescaleDB Handler
-TravisCI: [![TravisCI Build Status](https://travis-ci.org/sensu/sensu-timescale-handler.svg?branch=master)](https://travis-ci.org/sensu/sensu-timescale-handler)
+TravisCI: [![TravisCI Build Status](https://travis-ci.org/sensu/sensu-timescaledb-handler.svg?branch=master)](https://travis-ci.org/sensu/sensu-timescaledb-handler)
 
 The Sensu TimescaleDB Handler is a [Sensu Event Handler][3] that sends metrics to
 the time series database [TimescaleDB][2]. [Sensu][1] can collect metrics using
