@@ -9,10 +9,11 @@ import (
 	"time"
 
 	_ "github.com/lib/pq"
+	"github.com/sensu-community/sensu-plugin-sdk/sensu"
 	corev2 "github.com/sensu/sensu-go/api/core/v2"
-	"github.com/sensu/sensu-plugins-go-library/sensu"
 )
 
+// TimescaleDBHandler is a timescaledb handler
 type TimescaleDBHandler struct {
 	sensu.PluginConfig
 
@@ -20,6 +21,7 @@ type TimescaleDBHandler struct {
 	DB     *sql.DB
 }
 
+// TimescaleDBHandlerConfig is a timescaledb handler config
 type TimescaleDBHandlerConfig struct {
 	// DSN is a data source name. It is either a URL or a postgres connection
 	// string. See https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING
@@ -28,6 +30,7 @@ type TimescaleDBHandlerConfig struct {
 	Table string
 }
 
+// Run runs the timescaledb handler
 func (t *TimescaleDBHandler) Run(event *corev2.Event) error {
 	if err := t.Setup(); err != nil {
 		return err
@@ -42,6 +45,7 @@ func (t *TimescaleDBHandler) Run(event *corev2.Event) error {
 	return nil
 }
 
+// ProcessEvent processes the timescaledb handler event
 func (t *TimescaleDBHandler) ProcessEvent(event *corev2.Event) error {
 	query := fmt.Sprintf("INSERT INTO %s(time, name, value, source, tags) VALUES($1, $2, $3, $4, $5)", t.Config.Table)
 	stmt, err := t.DB.Prepare(query)
@@ -70,6 +74,7 @@ func (t *TimescaleDBHandler) ProcessEvent(event *corev2.Event) error {
 	return nil
 }
 
+// Setup sets up the timescaledb handler
 func (t *TimescaleDBHandler) Setup() error {
 	db, err := sql.Open("postgres", t.Config.DSN)
 	if err != nil {
@@ -85,6 +90,7 @@ func (t *TimescaleDBHandler) Setup() error {
 	return nil
 }
 
+// Validate validates the timescaledb config
 func (t *TimescaleDBHandler) Validate(event *corev2.Event) error {
 	if len(t.Config.DSN) == 0 {
 		return errors.New("missing DSN")

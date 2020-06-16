@@ -8,8 +8,8 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	_ "github.com/lib/pq"
+	"github.com/sensu-community/sensu-plugin-sdk/sensu"
 	corev2 "github.com/sensu/sensu-go/api/core/v2"
-	"github.com/sensu/sensu-plugins-go-library/sensu"
 	"github.com/stretchr/testify/assert"
 )
 
