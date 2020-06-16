@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/sensu/sensu-plugins-go-library/sensu"
+	"github.com/sensu-community/sensu-plugin-sdk/sensu"
 )
 
 func main() {
@@ -33,6 +33,6 @@ func main() {
 		},
 	}
 
-	goHandler := sensu.NewGoHandler(&handler.PluginConfig, configOptions, handler.Validate, handler.Run)
+	goHandler := sensu.NewEnterpriseGoHandler(&handler.PluginConfig, configOptions, handler.Validate, handler.Run)
 	goHandler.Execute()
 }
