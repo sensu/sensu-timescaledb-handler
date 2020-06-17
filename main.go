@@ -33,6 +33,6 @@ func main() {
 		},
 	}
 
-	goHandler := sensu.NewEnterpriseGoHandler(&handler.PluginConfig, configOptions, handler.Validate, handler.Run)
+	goHandler := sensu.NewGoHandler(&handler.PluginConfig, configOptions, handler.Validate, handler.Run)
 	goHandler.Execute()
 }
