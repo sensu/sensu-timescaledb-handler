@@ -123,7 +123,7 @@ func (t *TimescaleDBHandler) Validate(event *corev2.Event) error {
 	}
 	var sslmodes = []string{"disable", "require", "verify-ca", "verify-full"}
 	if indexOf(t.Config.SslMode, sslmodes) < 0 {
-		return errors.New(fmt.Sprintf("unsupported sslmode \"%s\"", t.Config.SslMode))
+		return fmt.Errorf("unsupported sslmode \"%s\"", t.Config.SslMode)
 	}
 	return nil
 }
