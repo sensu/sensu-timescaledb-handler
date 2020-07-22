@@ -101,8 +101,9 @@ func TestTimescaleDBHandler_Validate(t *testing.T) {
 			name: "pass when required config and args are met",
 			fields: fields{
 				Config: TimescaleDBHandlerConfig{
-					DSN:   "postgresql://foohost/bardb",
-					Table: "metrics",
+					DSN:     "postgresql://foohost/bardb",
+					Table:   "metrics",
+					SslMode: "disable",
 				},
 			},
 			args: args{
