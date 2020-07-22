@@ -7,7 +7,8 @@ import (
 	"fmt"
 	"strconv"
 	"time"
-
+	"net/url"
+	
 	_ "github.com/lib/pq"
 	"github.com/sensu-community/sensu-plugin-sdk/sensu"
 	corev2 "github.com/sensu/sensu-go/api/core/v2"
@@ -26,8 +27,9 @@ type TimescaleDBHandlerConfig struct {
 	// DSN is a data source name. It is either a URL or a postgres connection
 	// string. See https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING
 	// for more information.
-	DSN   string
-	Table string
+	DSN     string
+	Table   string
+	SslMode string
 }
 
 // Run runs the timescaledb handler
@@ -76,6 +78,24 @@ func (t *TimescaleDBHandler) ProcessEvent(event *corev2.Event) error {
 
 // Setup sets up the timescaledb handler
 func (t *TimescaleDBHandler) Setup() error {
+	// Set connection parameter defaults
+	// Reference: https://godoc.org/github.com/lib/pq#hdr-Connection_String_Parameters
+	params := url.Values{}
+	params.Set("sslmode", t.Config.SslMode)
+
+	// Parse the Data Source Name (DSN) & add missing default parameters
+	dsn,err := url.Parse(t.Config.DSN)
+	if err != nil {
+		return err
+	} 
+	q := dsn.Query()
+	for k := range q {
+		params.Set(k,q[k][0])
+	}
+	dsn.RawQuery = params.Encode()
+	t.Config.DSN = dsn.String()
+	
+	// Connect to TimescaleDB (Postgres database)
 	db, err := sql.Open("postgres", t.Config.DSN)
 	if err != nil {
 		return err
@@ -101,6 +121,10 @@ func (t *TimescaleDBHandler) Validate(event *corev2.Event) error {
 	if !event.HasMetrics() {
 		return errors.New("event does not contain metrics")
 	}
+	var sslmodes = []string{"disable","require","verify-ca","verify-full"}
+	if indexOf(t.Config.SslMode,sslmodes) < 0 {
+		return errors.New(fmt.Sprintf("unsupported sslmode \"%s\"", t.Config.SslMode))
+	}
 	return nil
 }
 
@@ -114,4 +138,13 @@ func convertInt64ToTime(t int64) (time.Time, error) {
 		return time.Time{}, err
 	}
 	return time.Unix(t, 0), nil
+}
+
+func indexOf(k string, s []string) (int) {
+	for i,v := range s {
+		if k == v {
+			return i
+		}
+	}
+	return -1
 }
