@@ -39,8 +39,8 @@ func main() {
 			Default:   "require",
 			Usage:     "the sslmode to use to connect to the database",
 			Value:     &handler.Config.SslMode,
-	},
-}
+		},
+	}
 
 	goHandler := sensu.NewGoHandler(&handler.PluginConfig, configOptions, handler.Validate, handler.Run)
 	goHandler.Execute()

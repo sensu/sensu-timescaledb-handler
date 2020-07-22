@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/url"
 	"strconv"
 	"time"
-	"net/url"
-	
+
 	_ "github.com/lib/pq"
 	"github.com/sensu-community/sensu-plugin-sdk/sensu"
 	corev2 "github.com/sensu/sensu-go/api/core/v2"
@@ -84,17 +84,17 @@ func (t *TimescaleDBHandler) Setup() error {
 	params.Set("sslmode", t.Config.SslMode)
 
 	// Parse the Data Source Name (DSN) & add missing default parameters
-	dsn,err := url.Parse(t.Config.DSN)
+	dsn, err := url.Parse(t.Config.DSN)
 	if err != nil {
 		return err
-	} 
+	}
 	q := dsn.Query()
 	for k := range q {
-		params.Set(k,q[k][0])
+		params.Set(k, q[k][0])
 	}
 	dsn.RawQuery = params.Encode()
 	t.Config.DSN = dsn.String()
-	
+
 	// Connect to TimescaleDB (Postgres database)
 	db, err := sql.Open("postgres", t.Config.DSN)
 	if err != nil {
@@ -121,8 +121,8 @@ func (t *TimescaleDBHandler) Validate(event *corev2.Event) error {
 	if !event.HasMetrics() {
 		return errors.New("event does not contain metrics")
 	}
-	var sslmodes = []string{"disable","require","verify-ca","verify-full"}
-	if indexOf(t.Config.SslMode,sslmodes) < 0 {
+	var sslmodes = []string{"disable", "require", "verify-ca", "verify-full"}
+	if indexOf(t.Config.SslMode, sslmodes) < 0 {
 		return errors.New(fmt.Sprintf("unsupported sslmode \"%s\"", t.Config.SslMode))
 	}
 	return nil
@@ -140,8 +140,8 @@ func convertInt64ToTime(t int64) (time.Time, error) {
 	return time.Unix(t, 0), nil
 }
 
-func indexOf(k string, s []string) (int) {
-	for i,v := range s {
+func indexOf(k string, s []string) int {
+	for i, v := range s {
 		if k == v {
 			return i
 		}
