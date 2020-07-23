@@ -118,12 +118,12 @@ func (t *TimescaleDBHandler) Validate(event *corev2.Event) error {
 	if len(t.Config.Table) == 0 {
 		return errors.New("missing Table")
 	}
-	if !event.HasMetrics() {
-		return errors.New("event does not contain metrics")
-	}
 	var sslmodes = []string{"disable", "require", "verify-ca", "verify-full"}
 	if indexOf(t.Config.SslMode, sslmodes) < 0 {
 		return fmt.Errorf("unsupported sslmode \"%s\"", t.Config.SslMode)
+	}
+	if !event.HasMetrics() {
+		return errors.New("event does not contain metrics")
 	}
 	return nil
 }
