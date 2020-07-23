@@ -84,11 +84,24 @@ func TestTimescaleDBHandler_Validate(t *testing.T) {
 			errMatch: "missing Table",
 		},
 		{
+			name: "fail when invalid sslmode specified",
+			fields: fields{
+				Config: TimescaleDBHandlerConfig{
+					DSN:     "postgresql://foohost/bardb",
+					Table:   "metrics",
+					SslMode: "test",
+				},
+			},
+			wantErr:  true,
+			errMatch: "unsupported sslmode \"test\"",
+		},
+		{
 			name: "fail when event has no metrics",
 			fields: fields{
 				Config: TimescaleDBHandlerConfig{
-					DSN:   "postgresql://foohost/bardb",
-					Table: "metrics",
+					DSN:     "postgresql://foohost/bardb",
+					Table:   "metrics",
+					SslMode: "disable",
 				},
 			},
 			args: args{
