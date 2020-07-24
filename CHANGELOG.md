@@ -6,7 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
-### Changed
+## [0.3.0] - 2020-07-24 
+
+- Update .goreleaser.yml to produce sha512 hashes for release artifacts 
+
+## [0.2.0] - 2020-07-24
+
+- Add support for configurable sslmodes (via `--sslmode` or `$TIMESCALEDB_SSLMODE`)
 - Remove TravisCI in favor of Github Actions
 - Update Sensu Go and SDK dependencies with the correct modules
 
