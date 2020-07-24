@@ -31,6 +31,15 @@ func main() {
 			Usage:     "the PostgreSQL table to store metrics in",
 			Value:     &handler.Config.Table,
 		},
+		{
+			Path:      "sslmode",
+			Env:       "TIMESCALEDB_SSLMODE",
+			Argument:  "sslmode",
+			Shorthand: "s",
+			Default:   "require",
+			Usage:     "the sslmode to use to connect to the database",
+			Value:     &handler.Config.SslMode,
+		},
 	}
 
 	goHandler := sensu.NewGoHandler(&handler.PluginConfig, configOptions, handler.Validate, handler.Run)
