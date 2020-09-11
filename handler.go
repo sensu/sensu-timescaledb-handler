@@ -62,7 +62,12 @@ func (t *TimescaleDBHandler) ProcessEvent(event *corev2.Event) error {
 			return err
 		}
 
-		jsonTags, err := json.Marshal(point.Tags)
+		tags := make(map[string]string)
+		for _, tag := range point.Tags {
+			tags[tag.Name] = tag.Value
+		}
+
+		jsonTags, err := json.Marshal(tags)
 		if err != nil {
 			return err
 		}
