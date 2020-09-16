@@ -13,6 +13,19 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func FixtureMetricJsonTags(pointTags []*corev2.MetricTag) ([]byte,error) {
+	tags := make(map[string]string)
+	for _, tag := range pointTags {
+		tags[tag.Name] = tag.Value
+	}
+
+	jsonTags, err := json.Marshal(tags)
+	if err != nil {
+		return jsonTags,err
+	}
+	return jsonTags,err
+}
+
 func FixtureEventWithMetrics(entity, check string) *corev2.Event {
 	event := corev2.FixtureEvent(entity, check)
 	event.Metrics = corev2.FixtureMetrics()
@@ -200,7 +213,8 @@ func TestTimescaleDBHandler_ProcessEvent(t *testing.T) {
 				if err != nil {
 					return err
 				}
-				tags, err := json.Marshal(mp.Tags)
+				// tags, err := json.Marshal(mp.Tags)
+				tags, err := FixtureMetricJsonTags(mp.Tags)
 				if err != nil {
 					return err
 				}
@@ -230,7 +244,8 @@ func TestTimescaleDBHandler_ProcessEvent(t *testing.T) {
 				if err != nil {
 					return err
 				}
-				tags, err := json.Marshal(mp.Tags)
+				// tags, err := json.Marshal(mp.Tags)
+				tags, err := FixtureMetricJsonTags(mp.Tags)
 				if err != nil {
 					return err
 				}
