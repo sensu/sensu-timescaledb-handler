@@ -34,6 +34,8 @@ github.com/coreos/etcd v3.3.10+incompatible/go.mod h1:uF7uidLiAD3TWHmW31ZFd/JWoc
 github.com/coreos/etcd v3.3.13+incompatible/go.mod h1:uF7uidLiAD3TWHmW31ZFd/JWoc32PjwdhPthX9715RE=
 github.com/coreos/etcd v3.3.17+incompatible h1:f/Z3EoDSx1yjaIjLQGo1diYUlQYSBrrAQ5vP8NjwXwo=
 github.com/coreos/etcd v3.3.17+incompatible/go.mod h1:uF7uidLiAD3TWHmW31ZFd/JWoc32PjwdhPthX9715RE=
+github.com/coreos/etcd v3.3.22+incompatible h1:AnRMUyVdVvh1k7lHe61YEd227+CLoNogQuAypztGSK4=
+github.com/coreos/etcd v3.3.22+incompatible/go.mod h1:uF7uidLiAD3TWHmW31ZFd/JWoc32PjwdhPthX9715RE=
 github.com/coreos/go-semver v0.2.0/go.mod h1:nnelYz7RCh+5ahJtPPxZlU+153eP4D4r3EedlOD2RNk=
 github.com/coreos/go-semver v0.3.0 h1:wkHLiw0WNATZnSG7epLsujiMCgPAc9xhjJ4tgnAxmfM=
 github.com/coreos/go-semver v0.3.0/go.mod h1:nnelYz7RCh+5ahJtPPxZlU+153eP4D4r3EedlOD2RNk=
@@ -196,6 +198,8 @@ github.com/sensu-community/sensu-plugin-sdk v0.7.0 h1:yjTVFdZAaofZXq3xxfSeuIdu3U
 github.com/sensu-community/sensu-plugin-sdk v0.7.0/go.mod h1:ZZakZghqMP0vrVxPdriu30G0B242amBZpBdceyPpkjU=
 github.com/sensu/sensu-go/api/core/v2 v2.0.0 h1:T9QXvin5+0oSRpDwhsTGrzZOJZqBKrXCJpdhOXI3CYU=
 github.com/sensu/sensu-go/api/core/v2 v2.0.0/go.mod h1:L+ZZ+QzsGTrNldiAdVrrQI/WIo31cq43YnEFt9T/6Pg=
+github.com/sensu/sensu-go/api/core/v2 v2.3.0 h1:7RrVfN4dvOMFsEOLotpvYD061s/fhicZQf4JaVoLgaI=
+github.com/sensu/sensu-go/api/core/v2 v2.3.0/go.mod h1:97IK4ZQuvVjWvvoLkp+NgrD6ot30WDRz3LEbFUc/N34=
 github.com/sensu/sensu-go/types v0.1.0 h1:1xB7nsPM6H0j+sDV6MTJTRrUqCZK1DN4zsn8tQNVhIA=
 github.com/sensu/sensu-go/types v0.1.0/go.mod h1:o3tBPy2BUWb3jPvMQ+pBs0CgCyN1vC1/loN4anURxvs=
 github.com/sensu/sensu-licensing v0.1.2 h1:EEZxvbj/pmCCfD4ePAzs9mb6k6IPRDbUJcwAOfSvuUc=
