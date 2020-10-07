@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## [0.5.0] - 2020-10-07 
+
 - Bump api/core/v2 version to 2.3.0 (adds validation for "prometheus_text" in 
   "event.check.output_format_metrics")
 
